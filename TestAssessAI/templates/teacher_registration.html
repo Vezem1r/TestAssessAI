@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teacher Registration</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        body {
+            margin-bottom: 50px;
+        }
+        footer {
+            background-color: #333;
+            color: #fff;
+            text-align: center;
+            padding: 10px 0;
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+        }
+        .back-btn {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+        }
+        .error-message {
+            color: red !important;
+            margin-top: 10px;
+        }
+        
+        .register-btn {
+            background-color: #00a499;
+            color: white;
+            font-size: 1 rem;
+            text-transform: uppercase;
+            width: 100%;
+            margin-top: 10px;
+        }
+        .register-form {
+            border: 1px solid #ddd;
+            padding: 20px;
+            margin-top: 20px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+    </style>
+</head>
+<body>
+    <a href="{% url 'teacher_login' %}" class="btn btn-secondary back-btn">Back</a>
+    <div class="container">
+        <h1 class="text-center mt-5">Teacher Registration</h1>
+        <div class="row justify-content-center">
+            <div class="col-md-6 register-form">
+                <form method="post">
+                    {% csrf_token %}
+                    <div class="form-group">
+                        <label for="id_username">Username</label>
+                        <input type="text" name="username" class="form-control" id="id_username">
+                        {% if form.errors.username %}
+                        <p class="error-message" style="color: red">{{ form.errors.username }}</p>
+                        {% endif %}
+                    </div>
+                    <div class="form-group">
+                        <label for="id_password1">Password</label>
+                        <input type="password" name="password1" class="form-control" id="id_password1">
+                        {% if form.errors.password1 %}
+                        <p class="error-message" style="color: red">{{ form.errors.password1 }}</p>
+                        {% endif %}
+                    </div>
+                    <div class="form-group">
+                        <label for="id_password2">Confirm Password</label>
+                        <input type="password" name="password2" class="form-control" id="id_password2">
+                        {% if form.errors.password2 %}
+                        <p class="error-message" style="color: red">{{ form.errors.password2 }}</p>
+                        {% endif %}
+                    </div>
+                    <button type="submit" class="btn register-btn">Register</button>
+                </form>
+            </div>
+        </div>
+    </div>
+    <footer>
+        AI-powered automatic assessment tool for written tests
+    </footer>
+</body>
+</html>

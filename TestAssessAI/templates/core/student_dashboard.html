@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Dashboard</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        .subject-container {
+            margin-bottom: 20px;
+        }
+        .test-item {
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            margin-bottom: 10px;
+        }
+        .footer {
+            background-color: #333;
+            color: #fff;
+            text-align: center;
+            padding: 10px 0;
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+        }
+    </style>
+</head>
+<body>
+    {% include "core/navbar_st.html" %}
+    <div class="container">
+        <div class="text-center mt-5">
+            <h2 class="mt-5">Subjects</h2>
+            {% for subject_test in subject_tests %}
+                {% if subject_test.tests %}
+                    <div class="subject-container">
+                        <div class="d-flex justify-content-between align-items-center mt-5">
+                            <h3>{{ subject_test.subject.lesson_title }}</h3> 
+                        </div>
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>Title</th>
+                                    <th>Duration</th>
+                                    <th>Start Time</th>
+                                    <th>Score</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for test in subject_test.tests %}
+                                <tr class="test-item">
+                                    <td>{{ test.test_title }}</td>
+                                    <td>{{ test.duration }} minutes</td>
+                                    <td>{{ test.start_time }}</td>
+                                    <td>{{ subject_test.total_score}}/{{ test.max_score }}</td>
+                                    <td>
+                                        {% if test.is_open %}
+                                            <a href="{% url 'view_test_student' test_id=test.test_id %}" class="btn btn-primary">Start</a>
+                                        {% else %}
+                                            <button class="btn btn-secondary" disabled>Start</button>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                            
+                            </tbody>
+                        </table>
+                    </div>
+                {% endif %}
+            {% endfor %}
+        </div>
+    </div>
+    <footer class="footer">
+        AI-powered automatic assessment tool for written tests
+    </footer>
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>

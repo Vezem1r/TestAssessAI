@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>View Test</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        .timer-badge {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1000; /* Ensure it's above other content */
+        }
+        .question-card {
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    {% include "core/navbar_st.html" %}
+    <div class="container mt-4">
+        <div class="row mb-3">
+            <div class="col-md-12 text-center">
+                <h1>{{ test.test_title }}</h1>
+                <p class="lead">Max Score: {{ test.max_score }}</p>
+                <p id="time-remaining" class="timer-badge badge badge-primary"></p>
+            </div>
+        </div>
+
+        <form id="test-form" method="post">
+            {% csrf_token %}
+            {% for question in questions %}
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="card question-card">
+                        <div class="card-body">
+                            <h5 class="card-title">Question {{ forloop.counter }}</h5>
+                            <p class="card-text">{{ question.question_text }}</p>
+                            <p><strong>Max Points:</strong> {{ question.score }}</p>
+                            <p><strong>Points Received:</strong> 0</p>
+                            <div class="form-group">
+                                <textarea name="question_answer_{{ question.pk }}" class="form-control" rows="3"></textarea>
+                                <input type="hidden" name="question_id" value="{{ question.pk }}">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+            <div class="row mt-3">
+                <div class="col-md-12 text-center">
+                    <button type="submit" class="btn btn-primary">Submit Test</button>
+                </div>
+            </div>
+        </form>
+        
+        
+    </div>
+    <footer class="footer">
+        AI-powered automatic assessment tool for written tests
+    </footer>
+
+    <script>
+        function updateTimerDisplay(seconds) {
+            var minutes = Math.floor(seconds / 60);
+            var remainingSeconds = seconds % 60;
+            var timerBadge = document.getElementById('time-remaining');
+            timerBadge.textContent = minutes.toString().padStart(2, '0') + ':' + remainingSeconds.toString().padStart(2, '0');
+        }
+        function startTimer(duration) {
+            var startTime = new Date().getTime();
+            var endTime = startTime + (duration * 1000);
+            var timerInterval = setInterval(function() {
+                var currentTime = new Date().getTime();
+                var remainingTime = Math.max(0, Math.floor((endTime - currentTime) / 1000));
+                updateTimerDisplay(remainingTime);
+                if (remainingTime === 0) {
+                    clearInterval(timerInterval);
+                    alert('Time is up!');
+                }
+            }, 1000);
+        }
+        document.addEventListener("DOMContentLoaded", function() {
+            var nextPageButtons = document.querySelectorAll('.next-page');
+            nextPageButtons.forEach(function(button) {
+                button.addEventListener('click', function() {
+                    window.scrollBy(0, window.innerHeight);
+                });
+            });
+            var timerStarted = localStorage.getItem('timerStarted');
+            if (!timerStarted) {
+                var duration = {{ test.duration }} * 60;
+                startTimer(duration);
+                localStorage.setItem('timerStarted', true);
+            } else {
+                var remainingSeconds = localStorage.getItem('remainingSeconds');
+                updateTimerDisplay(remainingSeconds);
+            }
+        });
+        document.getElementById('test-form').addEventListener('submit', function() {
+            localStorage.removeItem('timerStarted');
+            localStorage.removeItem('remainingSeconds');
+        });
+        window.addEventListener("beforeunload", function(event) {
+            var timerBadge = document.getElementById('time-remaining');
+            var remainingTime = timerBadge.textContent;
+            localStorage.setItem('remainingSeconds', remainingTime);
+        });
+    </script>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>

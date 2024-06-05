@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teacher Login</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        body {
+            margin-bottom: 50px;
+        }
+        footer {
+            background-color: #333;
+            color: #fff;
+            text-align: center;
+            padding: 10px 0;
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+        }
+        .login-form {
+            border: 1px solid #ddd;
+            padding: 20px;
+            margin-top: 20px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        .login-btn {
+            background-color: #00a499;
+            color: white;
+            font-size: 1 rem;
+            text-transform: uppercase;
+            width: 100%;
+            margin-top: 10px;
+        }
+        .register-link {
+            color: #00a499;
+            text-align: center;
+            margin-top: 10px;
+        }
+        .back-btn {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+        }
+        .error-message {
+            color: red;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <a href="{% url 'index' %}" class="btn btn-secondary back-btn">Back</a>
+    <div class="container">
+        <h1 class="text-center mt-5">Teacher Login</h1>
+        <div class="row justify-content-center">
+            <div class="col-md-6 login-form">
+                <form method="post">
+                    {% csrf_token %}
+                    {{ form.as_p }}
+                    {% if error_message %}
+                    <p class="error-message">{{ error_message }}</p>
+                    {% endif %}
+                    <button type="submit" class="btn login-btn">Login</button>
+                </form>
+                <a href="{% url 'teacher_registration' %}" class="btn register-link">Register as Teacher</a>
+            </div>
+        </div>
+    </div>
+    <footer>
+        AI-powered automatic assessment tool for written tests
+    </footer>
+</body>
+</html>

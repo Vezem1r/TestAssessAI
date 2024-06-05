@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Question</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <script src="https://cdn.ckeditor.com/4.16.2/standard/ckeditor.js"></script>
+    <style>
+        .btn-save {
+            background-color: #00a499;
+            border-color: #00a499;
+        }
+        .btn-save:hover {
+            background-color: #007f73;
+            border-color: #007f73;
+        }
+        .footer {
+            background-color: #333;
+            color: #fff;
+            text-align: center;
+            padding: 10px 0;
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+        }
+    </style>
+</head>
+<body>
+    {%include "core/navbar.html"%}
+    <div class="container mt-5">
+        <h2 class="text-center">Edit Question: {{ question.question_id }}</h2>
+        <div class="row justify-content-center">
+                <div class="card">
+                    <div class="card-body">
+                        <form method="post">
+                            {% csrf_token %}
+                            <div class="form-group">
+                                <label for="id_question_text">Question Text</label>
+                                <textarea id="id_question_text" name="question_text" class="form-control" rows="5">{{question.question_text}}</textarea>
+                                <script>
+                                    CKEDITOR.replace('id_question_text');
+                                </script>
+                            </div>
+                            <div class="form-group">
+                                <label for="id_score">Score</label>
+                                <input type="number" id="id_score" name="score" class="form-control" value="{{question.score}}">
+                            </div>
+                            <div class="form-group">
+                                <label for="id_max_length">Max Answer Length</label>
+                                <input type="number" id="id_max_length" name="max_length" class="form-control" value="{{question.max_length}}">
+                            </div>
+                            <div class="d-flex justify-content-between mt-4">
+                                <a href="{% url 'view_test' question.test.test_id %}" class="btn btn-secondary">Cancel</a>
+                                <button type="submit" class="btn btn-primary btn-save">Save Changes</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+        </div>
+    </div>
+    <footer class="footer">
+        AI-powered automatic assessment tool for written tests
+    </footer>
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script>
+        CKEDITOR.replace('id_question_text');
+    </script>
+</body>
+</html>

@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>View Test</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <style>
+        .footer {
+            background-color: #333;
+            color: #fff;
+            text-align: center;
+            padding: 10px 0;
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+        }
+        .question-header {
+            cursor: pointer;
+        }
+        .btn-custom {
+            background-color: #00a499;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <a href="{% url 'teacher_dashboard' %}" class="navbar-brand">Home</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
+            <ul class="navbar-nav">
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'logout' %}">Logout</a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+    <div class="container mt-5">
+        <h2 class="text-center">{{test.test_title}} Details</h2>
+        <h5>{{ test.test_description }}</h5>
+        <div class="mb-3">
+            <p>Start Time: {{ test.start_time }}</p>
+            <p>End Time: {{ test.end_time }}</p>
+            <p>Duration: {{ test.duration}} min </p>
+        </div>
+        <h3>Total Question Score: <span id="total-score">{{ test.total_score }}</span> of {{ test.max_score }}</h3>
+        <hr>
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <h4>Questions ({{ test.question_set.count }}):</h4>
+            <a href="{% url 'add_question_to_test' test.test_id %}" class="btn btn-custom">Add Question</a>
+        </div>
+        <div id="questionAccordion">
+            {% for question in test.question_set.all %}
+            <div class="card mb-3">
+                <div class="card-header d-flex justify-content-between align-items-center" id="heading{{ question.question_id }}">
+                    <div>
+                        <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#collapse{{ question.question_id }}" aria-expanded="true" aria-controls="collapse{{ question.question_id }}">
+                            Question {{ forloop.counter }} - {{ question.score }} points
+                        </button>
+                    </div>
+                    <div>
+                        <a href="{% url 'edit_question' question.question_id %}" class="btn btn-warning btn-sm">Edit</a>
+                        <a href="{% url 'delete_question' question.question_id %}" class="btn btn-danger btn-sm">Delete</a>
+                    </div>
+                </div>
+                <div id="collapse{{ question.question_id }}" class="collapse" aria-labelledby="heading{{ question.question_id }}">
+                    <div class="card-body">
+                        {{ question.question_text|safe }}
+                        <p><strong>Max Answer Length:</strong> {{ question.max_length }} characters</p>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        <a href="{% url 'view_subject' test.subject.subject_id %}" class="btn btn-secondary mt-3">Back</a>
+    </div>
+    <footer class="footer">
+        AI-powered automatic assessment tool for written tests
+    </footer>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            var totalScore = document.querySelector("#total-score");
+            var maxScore = {{ test.max_score }};
+            var currentScore = parseInt(totalScore.textContent);
+            
+            if (currentScore > maxScore) {
+                totalScore.style.color = "red";
+                totalScore.setAttribute("title", "Total score exceeds maximum score!");
+            } else if (currentScore === maxScore) {
+                totalScore.style.color = "green";
+                totalScore.setAttribute("title", "Total score equals maximum score!");
+            }
+        });
+    </script>
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>
