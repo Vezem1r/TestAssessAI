@@ -1,7 +1,7 @@
 from django.db.models import Sum
 from django.shortcuts import get_object_or_404, render, redirect
 from django.contrib.auth.decorators import login_required
-from .models import Subject, Test, Question, Submission, Mark
+from .models import Subject, Test, Question, Submission, Mark, Comment
 from user.models import User, Student
 from django.contrib.auth import get_user_model
 from .forms import QuestionForm, TestForm, TestSubmissionForm
@@ -246,11 +246,14 @@ def review_submission(request, test_id, student_id):
         submission = next((sub for sub in reversed(submissions) if sub.question.question_id == question.question_id), None)
         mark = Mark.objects.filter(submission=submission).first() if submission else None
         teacher_mark = mark.teacher_mark if mark else None
-        print("Question ID:", question.pk, "Submission ID:", submission.pk if submission else None, "Teacher Mark:", teacher_mark)
+        comments = Comment.objects.filter(submission=submission, teacher_id=mark.teacher_id).order_by('-comment_id')
+        teacher_comment = comments[0].comment_text if comments else None
+        #print("Question ID:", question.pk, "Submission ID:", submission.pk if submission else None, "Teacher Mark:", teacher_mark)
         questions_with_submissions.append({
             'question': question,
             'submission': submission,
-            'teacher_mark': teacher_mark
+            'teacher_mark': teacher_mark,
+            'teacher_comment': teacher_comment
         })
 
     context = {
@@ -287,15 +290,16 @@ def review_submission_teacher(request, test_id, student_id):
     questions = Question.objects.filter(test=test)
     submissions = Submission.objects.filter(student=student, question__in=questions).order_by('-submission_id')
     subject_id = test.subject.subject_id
+
     if request.method == 'POST' and request.user.is_teacher():
         for question in questions:
             mark_value = request.POST.get('mark_' + str(question.pk))
+            comment_text = request.POST.get('comment_' + str(question.pk))
             submission = submissions.filter(question=question).first()
             if submission and mark_value is not None:
                 try:
                     mark_value = float(mark_value)
                     if 0 <= mark_value <= question.score:
-                        
                         mark, created = Mark.objects.get_or_create(
                             submission=submission, 
                             teacher=request.user, 
@@ -304,52 +308,30 @@ def review_submission_teacher(request, test_id, student_id):
                         if not created:
                             mark.teacher_mark = mark_value
                         mark.save()
+                        if comment_text:
+                            Comment.objects.create(
+                                comment_text=comment_text,
+                                teacher=request.user,
+                                submission=submission
+                            )
                     else:
                         return HttpResponseBadRequest("Invalid mark value for question: " + question.question_text)
                 except ValueError:
                     return HttpResponseBadRequest("Invalid mark value for question: " + question.question_text)
-        return redirect('view_student_tests', subject_id = subject_id,  student_id=student_id)
+            else: return redirect('view_student_tests', subject_id=subject_id, student_id=student_id)  
+        return redirect('view_student_tests', subject_id=subject_id, student_id=student_id)
+
+    questions_with_submissions = []
+    for question in questions:
+        submission = submissions.filter(question=question).first()
+        latest_comment = Comment.objects.filter(submission=submission).order_by('-comment_id').first() if submission else None
+        questions_with_submissions.append({'question': question, 'submission': submission, 'latest_comment': latest_comment})
 
     context = {
         'test': test,
         'student': student,
-        'questions_with_submissions': [{'question': q, 'submission': submissions.filter(question=q).first()} for q in questions]
+        'questions_with_submissions': questions_with_submissions,
+        'subject_id': subject_id,
+        'student_id': student_id,
     }
     return render(request, 'core/review_submission_teacher.html', context)
-
-def save_review(request, test_id, student_id):
-    test = get_object_or_404(Test, pk=test_id)
-    student = get_object_or_404(Student, pk=student_id)
-    questions = Question.objects.filter(test=test)
-    submissions = Submission.objects.filter(student=student, question__in=questions)
-
-    if request.method == 'POST' and request.user.is_teacher():
-        for question in questions:
-            mark_value = request.POST.get('mark_' + str(question.pk))
-            submission = submissions.filter(question=question).first()
-            if submission and mark_value is not None:
-                try:
-                    mark_value = float(mark_value)
-                    if 0 <= mark_value <= question.score:
-                        
-                        mark, created = Mark.objects.get_or_create(
-                            submission=submission, 
-                            teacher=request.user, 
-                            defaults={'ai_mark': 0, 'teacher_mark': mark_value}
-                        )
-                        if not created:
-                            mark.teacher_mark = mark_value
-                        mark.save()
-                    else:
-                        return HttpResponseBadRequest("Invalid mark value for question: " + question.question_text)
-                except ValueError:
-                    return HttpResponseBadRequest("Invalid mark value for question: " + question.question_text)
-        return redirect('teacher_dashboard')
-
-    context = {
-        'test': test,
-        'student': student,
-        'questions_with_submissions': [{'question': q, 'submission': submissions.filter(question=q).first()} for q in questions]
-    }
-    return render(request, 'core/review_submission_teacher.html', context)
-

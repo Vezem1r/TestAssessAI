@@ -19,6 +19,38 @@
         .content {
             margin-bottom: 60px;
         }
+        .question-card {
+            margin-bottom: 20px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+        }
+        .card-header {
+            background-color: #00a499;
+            border-bottom: 1px solid #ccc;
+            color: #fff;
+            padding: 10px 20px;
+            border-radius: 8px 8px 0 0;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .card-body {
+            padding: 20px;
+        }
+        .card-text {
+            margin-bottom: 15px;
+            color: #000;
+        }
+        .teacher-comment {
+            background-color: #FFDE9C;
+            padding: 10px;
+            margin-top: 15px;
+            border-radius: 8px;
+        }
+        .btn-back {
+            background-color: #6c757d;
+            color: #fff;
+            border: none;
+        }
     </style>
 </head>
 <body>
@@ -35,35 +67,40 @@
             {% for item in questions_with_submissions %}
             <div class="row">
                 <div class="col-md-12">
-                    <div class="card mb-3">
+                    <div class="card question-card">
+                        <div class="card-header">
+                            <h5 class="card-title">{{ item.question.question_text|safe }}{% if item.teacher_mark %}
+                                <span class="badge badge-secondary">{{ item.teacher_mark }}/{{ item.question.score }}</span>
+                            {% else %}
+                                <span class="badge badge-secondary">No mark assigned yet</span>
+                            {% endif %}
+                            </h5>
+                        </div>
                         <div class="card-body">
-                            <h5 class="card-title">Question {{ forloop.counter }}</h5>
-                            <p class="card-text">{{ item.question.question_text|safe }}</p>
-                            <p><strong>Max Points:</strong> {{ item.question.score }}</p>
                             <div class="form-group">
-                                <label>Student's Answer:</label>
                                 {% if item.submission %}
                                     <p>{{ item.submission.question_answer }}</p>
                                 {% else %}
                                     <p>No answer submitted</p>
                                 {% endif %}
                             </div>
-                            <div class="form-group">
-                                <label>Teacher's Mark:</label>
-                                {% if item.teacher_mark %}
-                                    <p>{{ item.teacher_mark }}</p>
+                            <hr>
+                            <div class="teacher-comment">
+                                <label>Teacher's Comment:</label>
+                                {% if item.teacher_comment %}
+                                    <p>{{ item.teacher_comment }}</p>
                                 {% else %}
-                                    <p>No mark assigned yet</p>
+                                    <p>No comment provided</p>
                                 {% endif %}
-                            </div>   
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>            
+            </div>
             {% endfor %}
-            <div class="row">
+            <div class="row mt-3">
                 <div class="col-md-12 text-center">
-                    <button type="submit" class="btn btn-secondary">Back</button>
+                    <button type="submit" class="btn btn-back">Back</button>
                 </div>
             </div>
         </form>
