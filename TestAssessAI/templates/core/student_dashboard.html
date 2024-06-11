@@ -24,6 +24,9 @@
             bottom: 0;
             width: 100%;
         }
+        th {
+            width: 20%;
+        }
     </style>
 </head>
 <body>
@@ -48,22 +51,22 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                {% for test in subject_test.tests %}
-                                <tr class="test-item">
-                                    <td>{{ test.test_title }}</td>
-                                    <td>{{ test.duration }} minutes</td>
-                                    <td>{{ test.start_time }}</td>
-                                    <td>{{ subject_test.total_score}}/{{ test.max_score }}</td>
-                                    <td>
-                                        {% if test.is_open %}
-                                            <a href="{% url 'view_test_student' test_id=test.test_id %}" class="btn btn-primary">Start</a>
-                                        {% else %}
-                                            <button class="btn btn-secondary" disabled>Start</button>
-                                        {% endif %}
-                                    </td>
-                                </tr>
-                            {% endfor %}
-                            
+                                {% for test_info in subject_test.tests %}
+                                    <tr class="test-item">
+                                        <td>{{ test_info.test.test_title }}</td>
+                                        <td>{{ test_info.test.duration }} minutes</td>
+                                        <td>{{ test_info.test.start_time }}</td>
+                                        <td>{{ test_info.total_score }}</td>
+                                        <td>
+                                            {% if test_info.test.is_open %}
+                                                <a href="{% url 'view_test_student' test_id=test_info.test.test_id %}" class="btn btn-primary">Start</a>
+                                            {% else %}
+                                                <button class="btn btn-secondary" disabled>Start</button>
+                                            {% endif %}
+                                            <a href="{% url 'review_submission' test_id=test_info.test.test_id student_id=request.user.id %}" class="btn btn-secondary">Review</a>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
                             </tbody>
                         </table>
                     </div>

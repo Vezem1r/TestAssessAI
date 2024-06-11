@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Review Submission</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        .content {
+            margin-bottom: 60px;
+        }
+        .footer {
+            background-color: #333;
+            color: #fff;
+            text-align: center;
+            padding: 10px 0;
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+        }
+        .submit-btn {
+            background-color: #00a499;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    {% include "core/navbar.html" %}
+    <div class="container content">
+        <div class="row mb-3">
+            <div class="col-md-12 text-center">
+                <h2>Review Submission for {{ test.test_title }}</h2>
+                <p class="lead">Student: <strong>{{ student.username }}</strong></p>
+            </div>
+        </div>
+        <form method="post">
+            {% csrf_token %}
+            {% for item in questions_with_submissions %}
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="card mb-3">
+                        <div class="card-body">
+                            <h5 class="card-title">Question {{ forloop.counter }}</h5>
+                            <p class="card-text">{{ item.question.question_text|safe }}</p>
+                            <p><strong>Max Points:</strong> {{ item.question.score }}</p>
+                            <div class="form-group">
+                                <label>Student's Answer:</label>
+                                {% if item.submission %}
+                                    <p>{{ item.submission.question_answer }}</p>
+                                {% else %}
+                                    <p>No answer submitted</p>
+                                {% endif %}
+                            </div>      
+                            <div class="form-group">
+                                <label for="mark_{{ item.question.pk }}">Teacher's Mark:</label>
+                                <input type="number" class="form-control" name="mark_{{ item.question.pk }}" id="mark_{{ item.question.pk }}" step="0.01" min="0" max="{{ item.question.score }}" value="{% if item.submission %}{{ item.submission.teacher_score }}{% endif %}">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>            
+            {% endfor %}
+            <div class="row">
+                <div class="col-md-12 text-center">
+                    <button type="submit" class="btn submit-btn">Submit Marks</button>
+                </div>
+            </div>
+        </form>        
+    </div>
+    <footer class="footer">
+        AI-powered automatic assessment tool for written tests
+    </footer>
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>

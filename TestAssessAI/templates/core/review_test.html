@@ -1,0 +1,39 @@
+<html lang="en">
+<head>
+</head>
+<body>
+    <h2>Review Test</h2>
+    <h3>Test: {{ test.test_title }}</h3>
+    <h4>Student: {{ student.username }}</h4>
+    <form method="post">
+        {% csrf_token %}
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Question</th>
+                    <th>Student's Answer</th>
+                    <th>Teacher's Mark</th>
+                    <th>AI Mark</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in question_responses %}
+                    <tr>
+                        <td>{{ item.question.question_text }}</td>
+                        <td>{{ item.submission.question_answer }}</td>
+                        <td>{{ item.submission.teacher_score }}</td>
+                        <td>{{ item.submission.ai_score }}</td>
+                        <td>
+                            {{ formset.management_form }}
+                            {% for form in formset %}
+                                {{ form.as_p }}
+                            {% endfor %}
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <button type="submit">Submit Marks</button>
+    </form>
+</body>
+</html>

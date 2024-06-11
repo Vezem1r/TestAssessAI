@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>View Test</title>
+</head>
+<body>
+    <h1>{{ test.test_title }}</h1>
+    <p>{{ test.test_description }}</p>
+
+    <h2>Questions and Your Answers</h2>
+    <ul>
+        {% for question, answer in question_answers.items %}
+        <li>
+            <h3>{{ question }}</h3>
+            <p>Your Answer: {{ answer|default:"No answer provided" }}</p>
+        </li>
+        {% endfor %}
+    </ul>
+</body>
+</html>

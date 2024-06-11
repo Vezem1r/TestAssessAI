@@ -17,5 +17,8 @@ urlpatterns = [
     path('teacher/edit_question/<int:question_id>/', views.edit_question, name='edit_question'),
     path('teacher/delete_question/<int:question_id>/', views.delete_question, name='delete_question'),
     path('student/view_test/<int:test_id>/', views.view_test_student, name='view_test_student'),
-
+    path('teacher/review_submission/<int:test_id>/<int:student_id>/', views.review_submission, name='review_submission'),
+    path('teacher/view_student_tests/<int:subject_id>/<int:student_id>/', views.view_student_tests, name='view_student_tests'),
+    path('teacher/review_submission_teacher/<int:test_id>/<int:student_id>/', views.review_submission_teacher, name='review_submission_teacher'),
+    path('core/teacher/review_submission_teacher/<int:test_id>/<int:student_id>/', views.save_review, name='save_review'),
 ]

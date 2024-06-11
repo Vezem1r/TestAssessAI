@@ -47,7 +47,7 @@
             <p>End Time: {{ test.end_time }}</p>
             <p>Duration: {{ test.duration}} min </p>
         </div>
-        <h3>Total Question Score: <span id="total-score">{{ test.total_score }}</span> of {{ test.max_score }}</h3>
+        <h3>Total Question Score: <span id="total-score">{{ total_score }}</span> of {{ test.max_score }}</h3>
         <hr>
         <div class="d-flex justify-content-between align-items-center mb-3">
             <h4>Questions ({{ test.question_set.count }}):</h4>
