@@ -249,6 +249,7 @@ def review_submission(request, test_id, student_id):
         comments = Comment.objects.filter(submission=submission, teacher_id=mark.teacher_id).order_by('-comment_id')
         teacher_comment = comments[0].comment_text if comments else None
         #print("Question ID:", question.pk, "Submission ID:", submission.pk if submission else None, "Teacher Mark:", teacher_mark)
+
         questions_with_submissions.append({
             'question': question,
             'submission': submission,
