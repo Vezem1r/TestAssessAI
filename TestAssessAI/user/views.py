@@ -48,7 +48,12 @@ def student_registration(request):
             user = form.save(commit=False)
             user.role = User.Role.STUDENT
             user.save()
-            return redirect('student_login')
+            username = form.cleaned_data.get('username')
+            raw_password = form.cleaned_data.get('password1')
+            user = authenticate(username=username, password=raw_password)
+            if user is not None:
+                login(request, user)
+                return redirect('student_dashboard')
     else:
         form = StudentRegistrationForm()
     return render(request, 'student_registration.html', {'form': form})
@@ -60,7 +65,12 @@ def teacher_registration(request):
             user = form.save(commit=False)
             user.role = User.Role.TEACHER
             user.save()
-            return redirect('teacher_login')
+            username = form.cleaned_data.get('username')
+            raw_password = form.cleaned_data.get('password1')
+            user = authenticate(username=username, password=raw_password)
+            if user is not None:
+                login(request, user)
+                return redirect('teacher_dashboard')
     else:
         form = TeacherRegistrationForm()
     return render(request, 'teacher_registration.html', {'form': form})

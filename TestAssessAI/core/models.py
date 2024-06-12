@@ -21,7 +21,7 @@ class Test(models.Model):
     max_score = models.FloatField(default=100.0)
     subject = models.ForeignKey(Subject, on_delete=models.CASCADE)
     is_open = models.BooleanField(default=False)
-    max_attempts = models.IntegerField(default=3)  # Новое поле для максимального количества попыток
+    max_attempts = models.IntegerField(default=3)
 
     @property
     def total_score(self):

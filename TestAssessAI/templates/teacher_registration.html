@@ -27,7 +27,6 @@
             color: red !important;
             margin-top: 10px;
         }
-        
         .register-btn {
             background-color: #00a499;
             color: white;
@@ -56,21 +55,21 @@
                         <label for="id_username">Username</label>
                         <input type="text" name="username" class="form-control" id="id_username">
                         {% if form.errors.username %}
-                        <p class="error-message" style="color: red">{{ form.errors.username }}</p>
+                        <p class="error-message">{{ form.errors.username }}</p>
                         {% endif %}
                     </div>
                     <div class="form-group">
                         <label for="id_password1">Password</label>
                         <input type="password" name="password1" class="form-control" id="id_password1">
                         {% if form.errors.password1 %}
-                        <p class="error-message" style="color: red">{{ form.errors.password1 }}</p>
+                        <p class="error-message">{{ form.errors.password1 }}</p>
                         {% endif %}
                     </div>
                     <div class="form-group">
                         <label for="id_password2">Confirm Password</label>
                         <input type="password" name="password2" class="form-control" id="id_password2">
                         {% if form.errors.password2 %}
-                        <p class="error-message" style="color: red">{{ form.errors.password2 }}</p>
+                        <p class="error-message">{{ form.errors.password2 }}</p>
                         {% endif %}
                     </div>
                     <button type="submit" class="btn register-btn">Register</button>

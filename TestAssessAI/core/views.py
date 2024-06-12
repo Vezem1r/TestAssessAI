@@ -244,12 +244,15 @@ def review_submission(request, test_id, student_id):
     questions_with_submissions = []
     for question in questions:
         submission = next((sub for sub in reversed(submissions) if sub.question.question_id == question.question_id), None)
-        mark = Mark.objects.filter(submission=submission).first() if submission else None
-        teacher_mark = mark.teacher_mark if mark else None
-        comments = Comment.objects.filter(submission=submission, teacher_id=mark.teacher_id).order_by('-comment_id')
-        teacher_comment = comments[0].comment_text if comments else None
-        #print("Question ID:", question.pk, "Submission ID:", submission.pk if submission else None, "Teacher Mark:", teacher_mark)
-
+        if submission:
+            mark = Mark.objects.filter(submission=submission).first()
+            teacher_mark = mark.teacher_mark if mark else None
+            comments = Comment.objects.filter(submission=submission, teacher_id=mark.teacher_id).order_by('-comment_id') if mark else None
+            teacher_comment = comments[0].comment_text if comments else None
+        else:
+            teacher_mark = None
+            teacher_comment = None
+        
         questions_with_submissions.append({
             'question': question,
             'submission': submission,
@@ -263,6 +266,7 @@ def review_submission(request, test_id, student_id):
         'questions_with_submissions': questions_with_submissions
     }
     return render(request, 'core/review_submission.html', context)
+
 
 @login_required
 def view_student_tests(request, student_id, subject_id):

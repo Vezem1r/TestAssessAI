@@ -87,7 +87,7 @@
             var maxScore = {{ test.max_score }};
             var currentScore = parseInt(totalScore.textContent);
             
-            if (currentScore > maxScore) {
+            if (currentScore != maxScore) {
                 totalScore.style.color = "red";
                 totalScore.setAttribute("title", "Total score exceeds maximum score!");
             } else if (currentScore === maxScore) {
