@@ -95,7 +95,6 @@ def student_dashboard(request):
 
     subjects = Subject.objects.filter(students=request.user)
     subject_tests = []
-
     for subject in subjects:
         tests = Test.objects.filter(subject=subject)
         for test in tests:
@@ -105,6 +104,7 @@ def student_dashboard(request):
         for test in tests:
             questions = test.question_set.all()
             num_questions = questions.count()
+            max_possible_score = sum(question.score for question in questions)
             submissions = Submission.objects.filter(
                 student=request.user, question__in=questions)
             question_scores = []
@@ -120,7 +120,8 @@ def student_dashboard(request):
             subject_test_list.append({
                 'test': test,
                 'question_scores': question_scores,
-                'total_score': total_score
+                'total_score': total_score,
+                'max_score': max_possible_score
             })
 
         subject_tests.append({

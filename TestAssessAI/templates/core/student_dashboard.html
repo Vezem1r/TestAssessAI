@@ -56,7 +56,7 @@
                                         <td>{{ test_info.test.test_title }}</td>
                                         <td>{{ test_info.test.duration }} minutes</td>
                                         <td>{{ test_info.test.start_time }}</td>
-                                        <td>{{ test_info.total_score }}</td>
+                                        <td>{{ test_info.total_score }}/{{ test_info.max_score}}</td>
                                         <td>
                                             {% if test_info.test.is_open %}
                                                 <a href="{% url 'view_test_student' test_id=test_info.test.test_id %}" class="btn btn-primary">Start</a>
