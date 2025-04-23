@@ -26,6 +26,10 @@ class TestForm(forms.ModelForm):
         end_time = cleaned_data.get("end_time")
         duration = cleaned_data.get("duration")
 
+        print(start_time, end_time, duration)
+
+        BREAK CHANGES
+
         if start_time and end_time:
             if start_time >= end_time:
                 raise forms.ValidationError(
